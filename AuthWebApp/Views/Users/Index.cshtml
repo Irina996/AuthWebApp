@@ -1,0 +1,70 @@
+﻿@model IEnumerable<AuthWebApp.Models.User>
+@{
+	ViewBag.Title = "List of users";
+}
+@if (User.Identity.IsAuthenticated)
+{
+	<head runat="server">
+		<title></title>
+		<script type="text/javascript">
+			checked=false;
+			function checkedAll (frm1) {
+				var aa= document.getElementById('frm1');
+				 if (checked == false){
+					   checked = true
+					  }
+					else{
+					  checked = false
+					  }
+				for (var i =0; i < aa.elements.length; i++){
+				 aa.elements[i].checked = checked;
+				}
+				  }
+		</script>
+	</head>
+
+	<form action="Users/Edit">
+		<button type="submit" name="actionType" value="block">Block</button>
+		<button type="submit" name="actionType" value="unblock">Unblock</button>
+		<button type="submit" name="actionType" value="delete"><i class='fa fa-trash'></i></button>
+
+
+		<table class="table">
+			<tr>
+				<th>
+					<div>
+						<input type="checkbox" id="all" name="all" onclick='checkedAll(frm1);'>
+						<label for="all">All</label>
+					</div>
+				</th>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Created date</th>
+				<th>Last log in date</th>
+				<th>Is blocked?</th>
+			</tr>
+			@foreach (var user in Model)
+			{
+				<tr>
+					<td>
+						<div>
+							<input type="checkbox" id="@user.Id" name="identifiers" value="@user.Id">
+						</div>
+					</td>
+					<td>@user.Id</td>
+					<td>@user.UserName</td>
+					<td>@user.Email</td>
+					<td>@user.CreatedDate</td>
+					<td>@user.LastLogIn</td>
+					<td>@user.IsBlocked</td>
+				</tr>
+			}
+
+		</table>
+	</form>
+}
+else {
+	 <a asp-controller="Account" asp-action="Login">Вход</a>
+    <a asp-controller="Account" asp-action="Register">Регистрация</a>
+}

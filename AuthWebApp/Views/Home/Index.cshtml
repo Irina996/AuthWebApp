@@ -6,6 +6,11 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>*@
+@*
+@model IEnumerable<AuthWebApp.Models.User>
+@{
+    ViewBag.Title = "Список пользователей";
+}
 
 @{
     ViewData["Title"] = "Home Page";
@@ -14,14 +19,19 @@
  
 @if(User.Identity.IsAuthenticated)
 {
-    <p>@User.Identity.Name</p>
+   <p>@User.Identity.Name</p>
  
     <form method="post" asp-controller="Account" asp-action="Logout">
         <input type="submit" value="Выход" />
     </form>
+
+   <a asp-controller="Users" asp-action="Index">Users</a>
 }
 else
 {
     <a asp-controller="Account" asp-action="Login">Вход</a>
     <a asp-controller="Account" asp-action="Register">Регистрация</a>
 }
+*@
+<a asp-controller="Account" asp-action="Login">Login</a>
+<a asp-controller="Account" asp-action="Register">Registration</a>
