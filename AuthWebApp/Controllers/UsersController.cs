@@ -1,9 +1,11 @@
 ﻿using AuthWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthWebApp.Controllers
 {
+    [Authorize(Roles = "unblocked")]
     public class UsersController : Controller
     {
         UserManager<User> _userManager;
@@ -55,7 +57,19 @@ namespace AuthWebApp.Controllers
                                 ModelState.AddModelError(string.Empty, error.Description);
                             }
                         }
+                        result = await _userManager.RemoveFromRoleAsync(user, "unblocked");
+                        if (!result.Succeeded)
+                        {
+                            foreach (var error in result.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                        }
                     }
+                }
+                if (identifiers.Contains(currentUser.Id))
+                {
+                    return RedirectToAction("Logout", "Account");
                 }
                 return RedirectToAction("Index");
             }
@@ -70,6 +84,14 @@ namespace AuthWebApp.Controllers
                     {
                         user.IsBlocked = false;
                         var result = await _userManager.UpdateAsync(user);
+                        if (!result.Succeeded)
+                        {
+                            foreach (var error in result.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                        }
+                        result = await _userManager.AddToRoleAsync(user, "unblocked");
                         if (!result.Succeeded)
                         {
                             foreach (var error in result.Errors)

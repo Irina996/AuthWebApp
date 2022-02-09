@@ -9,11 +9,18 @@ namespace AuthWebApp.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, 
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
+        }
+        public IActionResult Index()
+        {
+            return View();
         }
 
         [HttpGet]
@@ -28,11 +35,22 @@ namespace AuthWebApp.Controllers
             if (ModelState.IsValid)
             {
                 User user = new User { Email = model.Email, UserName = model.Name };
-                // добавляем пользователя
+                
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // установка куки
+                    if (!_roleManager.Roles.Any())
+                    {
+                        if (await _roleManager.FindByNameAsync("blocked") == null)
+                        {
+                            await _roleManager.CreateAsync(new IdentityRole("blocked"));
+                        }
+                        if (await _roleManager.FindByNameAsync("unblocked") == null)
+                        {
+                            await _roleManager.CreateAsync(new IdentityRole("unblocked"));
+                        }
+                    }
+                    await _userManager.AddToRoleAsync(user, "unblocked");
                     await _signInManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -57,9 +75,9 @@ namespace AuthWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (true)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
                 if (result.Succeeded)
                 {
                     // проверяем, принадлежит ли URL приложению
@@ -85,7 +103,12 @@ namespace AuthWebApp.Controllers
         {
             // удаляем аутентификационные куки
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Register", "Account");
+            return RedirectToAction("Index", "Account");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return RedirectToAction("Index", "Account");
         }
     }
 }
