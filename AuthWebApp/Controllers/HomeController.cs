@@ -22,6 +22,11 @@ namespace AuthWebApp.Controllers
             return View();
         }
 
+        public IActionResult Login()
+        {
+            return RedirectToAction("Login", "Users");
+        }
+
         public IActionResult Privacy()
         {
             return View();

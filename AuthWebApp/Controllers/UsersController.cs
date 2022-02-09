@@ -15,9 +15,18 @@ namespace AuthWebApp.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index() => View(_userManager.Users.ToList());
+        public IActionResult Index()
+        {
+            return View(_userManager.Users.ToList());
+        }
 
-
+        public async Task<IActionResult> Login()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            user.LastLogIn = DateTime.Now;
+            await _userManager.UpdateAsync(user);
+            return RedirectToAction("Index");
+        }
         public async Task<ActionResult> Edit(List<string> identifiers, string actionType)
         {
             if (actionType == "delete")

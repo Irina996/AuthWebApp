@@ -23,6 +23,7 @@
 		</script>
 	</head>
 
+	<h1>UserName: @User.Identity.Name</h1>
 	<form action="Users/Edit">
 		<button type="submit" name="actionType" value="block">Block</button>
 		<button type="submit" name="actionType" value="unblock">Unblock</button>
@@ -65,6 +66,6 @@
 	</form>
 }
 else {
-	 <a asp-controller="Account" asp-action="Login">Вход</a>
-    <a asp-controller="Account" asp-action="Register">Регистрация</a>
+	 <a asp-controller="Account" asp-action="Login">Login</a>
+    <a asp-controller="Account" asp-action="Register">Registration</a>
 }
