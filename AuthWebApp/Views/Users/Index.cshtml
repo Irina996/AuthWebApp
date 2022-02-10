@@ -25,9 +25,11 @@
 
 	<h1>UserName: @User.Identity.Name</h1>
 	<form action="Users/Edit">
-		<button type="submit" name="actionType" value="block">Block</button>
-		<button type="submit" name="actionType" value="unblock">Unblock</button>
-		<button type="submit" name="actionType" value="delete"><i class='fa fa-trash'></i></button>
+		<div class="toolbar">
+			<button type="submit" name="actionType" value="block">Block</button>
+			<button type="submit" name="actionType" value="unblock">Unblock</button>
+			<button type="submit" name="actionType" value="delete"><i class='fa fa-trash'></i></button>
+		</div>
 
 
 		<table class="table">
@@ -65,7 +67,8 @@
 		</table>
 	</form>
 }
-else {
-	 <a asp-controller="Account" asp-action="Login">Login</a>
-    <a asp-controller="Account" asp-action="Register">Registration</a>
+else
+{
+	<a asp-controller="Account" asp-action="Login">Login</a>
+	<a asp-controller="Account" asp-action="Register">Registration</a>
 }

@@ -11,7 +11,7 @@ namespace AuthWebApp.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, 
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
             RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
@@ -35,7 +35,7 @@ namespace AuthWebApp.Controllers
             if (ModelState.IsValid)
             {
                 User user = new User { Email = model.Email, UserName = model.Name };
-                
+
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -72,21 +72,18 @@ namespace AuthWebApp.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (true)
-            {
-                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
-                if (result.Succeeded)
-                {
 
-                    return RedirectToAction("Login", "Home");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Wrong login or password");
-                }
+            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
+            if (result.Succeeded)
+            {
+
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Wrong login or password");
             }
             return View(model);
         }
