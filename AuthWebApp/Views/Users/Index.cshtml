@@ -25,7 +25,7 @@
 
 	<h2>UserName: @User.Identity.Name</h2>
 	<a class="button" asp-controller="Account" asp-action="Logout">Logout</a>
-	<form action="Users/Edit">
+	<form id='frm1' action="Users/Edit">
 		<div class="navbar navbar-expand-sm sticky-top navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
 			<button type="submit" name="actionType" value="block">Block</button>
 			<button type="submit" name="actionType" value="unblock">Unblock</button>

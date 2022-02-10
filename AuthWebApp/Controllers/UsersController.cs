@@ -15,8 +15,13 @@ namespace AuthWebApp.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user.IsBlocked)
+            {
+                return RedirectToAction("Logout", "Account");
+            }
             return View(_userManager.Users.ToList());
         }
 
@@ -27,12 +32,16 @@ namespace AuthWebApp.Controllers
             await _userManager.UpdateAsync(user);
             return RedirectToAction("Index");
         }
+
         public async Task<ActionResult> Edit(List<string> identifiers, string actionType)
         {
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            if (currentUser.IsBlocked)
+            {
+                return RedirectToAction("Logout", "Account");
+            }
             if (actionType == "delete")
             {
-                var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-
                 foreach (var id in identifiers)
                 {
                     User user = await _userManager.FindByIdAsync(id);
@@ -41,7 +50,6 @@ namespace AuthWebApp.Controllers
                         IdentityResult result = await _userManager.DeleteAsync(user);
                     }
                 }
-
                 if (identifiers.Contains(currentUser.Id))
                 {
                     return RedirectToAction("Logout", "Account");
@@ -50,8 +58,6 @@ namespace AuthWebApp.Controllers
             }
             else if (actionType == "block")
             {
-                var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-
                 foreach (var id in identifiers)
                 {
                     User user = await _userManager.FindByIdAsync(id);
@@ -84,8 +90,6 @@ namespace AuthWebApp.Controllers
             }
             else if (actionType == "unblock")
             {
-                var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-
                 foreach (var id in identifiers)
                 {
                     User user = await _userManager.FindByIdAsync(id);
@@ -112,7 +116,6 @@ namespace AuthWebApp.Controllers
                 }
                 return RedirectToAction("Index");
             }
-
             return RedirectToAction("Error", "Home");
         }
     }
